@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-shellcheck"
+version = "0.1.0"
+description = "Catch cross-shell portability bugs in agent instruction files."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "cuijialin8888-code" },
+]
+keywords = [
+  "agent-skills",
+  "agents-md",
+  "cross-platform",
+  "linter",
+  "powershell",
+  "shell",
+  "windows",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/cuijialin8888-code/agent-shellcheck"
+Documentation = "https://github.com/cuijialin8888-code/agent-shellcheck#readme"
+Issues = "https://github.com/cuijialin8888-code/agent-shellcheck/issues"
+Source = "https://github.com/cuijialin8888-code/agent-shellcheck"
+
+[project.scripts]
+agent-shellcheck = "agent_shellcheck.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["agent_shellcheck*"]

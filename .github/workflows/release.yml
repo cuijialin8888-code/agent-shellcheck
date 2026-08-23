@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build release distributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install build frontend
+        run: python -m pip install --disable-pip-version-check build
+
+      - name: Build wheel and source distribution
+        run: python -m build
+
+      - name: Smoke-test wheel
+        run: |
+          python -m venv .release-smoke
+          .release-smoke/bin/python -m pip install --disable-pip-version-check --no-deps dist/*.whl
+          .release-smoke/bin/agent-shellcheck --help
+          .release-smoke/bin/python -m pip check
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Create GitHub release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes

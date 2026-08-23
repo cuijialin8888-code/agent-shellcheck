@@ -1,0 +1,8 @@
+- id: agent-shellcheck
+  name: agent-shellcheck
+  description: Catch cross-shell portability bugs in agent instruction files.
+  entry: agent-shellcheck
+  language: python
+  files: (?i)(^|/)(agents(?:\.override)?\.md|claude(?:\.local)?\.md|gemini\.md|skill\.md|\.cursorrules|\.clinerules|[^/]+\.instructions\.md|[^/]+\.mdc)$
+  pass_filenames: true
+  require_serial: true

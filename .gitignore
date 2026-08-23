@@ -1,0 +1,21 @@
+# Python caches and test output
+__pycache__/
+*.py[cod]
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Packaging and virtual environments
+build/
+dist/
+*.egg-info/
+.venv/
+.package-smoke/
+.release-smoke/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

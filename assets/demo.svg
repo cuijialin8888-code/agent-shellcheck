@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="630" viewBox="0 0 1120 630" role="img" aria-labelledby="title desc">
+  <title id="title">agent-shellcheck terminal demo</title>
+  <desc id="desc">A portability scan catches POSIX commands inside a PowerShell block and reports exact lines.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1120" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <filter id="drop" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dy="16" stdDeviation="22" flood-color="#020617" flood-opacity=".45"/>
+    </filter>
+  </defs>
+  <rect width="1120" height="630" rx="28" fill="#e2e8f0"/>
+  <text x="58" y="70" fill="#0f172a" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="28" font-weight="700">AGENTS.md</text>
+  <rect x="50" y="94" width="1020" height="188" rx="16" fill="#fff" stroke="#cbd5e1"/>
+  <text x="79" y="135" fill="#64748b" font-family="Consolas,Menlo,monospace" font-size="22">10</text>
+  <text x="130" y="135" fill="#475569" font-family="Consolas,Menlo,monospace" font-size="22">```powershell</text>
+  <rect x="120" y="150" width="861" height="42" rx="7" fill="#fff1f2"/>
+  <text x="79" y="178" fill="#e11d48" font-family="Consolas,Menlo,monospace" font-size="22">11</text>
+  <text x="130" y="178" fill="#881337" font-family="Consolas,Menlo,monospace" font-size="22">export TOOL_HOME="$HOME/.tool"</text>
+  <rect x="120" y="197" width="861" height="42" rx="7" fill="#fff1f2"/>
+  <text x="79" y="225" fill="#e11d48" font-family="Consolas,Menlo,monospace" font-size="22">12</text>
+  <text x="130" y="225" fill="#881337" font-family="Consolas,Menlo,monospace" font-size="22">source .venv/bin/activate</text>
+  <text x="79" y="266" fill="#64748b" font-family="Consolas,Menlo,monospace" font-size="22">13</text>
+  <text x="130" y="266" fill="#475569" font-family="Consolas,Menlo,monospace" font-size="22">```</text>
+
+  <rect x="50" y="315" width="1020" height="265" rx="18" fill="url(#bg)" filter="url(#drop)"/>
+  <rect x="50" y="315" width="1020" height="54" rx="18" fill="#1e293b"/>
+  <path d="M50 351h1020" stroke="#1e293b" stroke-width="36"/>
+  <circle cx="82" cy="342" r="7" fill="#fb7185"/>
+  <circle cx="107" cy="342" r="7" fill="#fbbf24"/>
+  <circle cx="132" cy="342" r="7" fill="#34d399"/>
+  <text x="170" y="350" fill="#94a3b8" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="18">agent-shellcheck · portable</text>
+  <text x="80" y="407" fill="#34d399" font-family="Consolas,Menlo,monospace" font-size="21">$</text>
+  <text x="106" y="407" fill="#f8fafc" font-family="Consolas,Menlo,monospace" font-size="21">agent-shellcheck . --target portable</text>
+  <text x="80" y="455" fill="#fda4af" font-family="Consolas,Menlo,monospace" font-size="19">AGENTS.md:11:1  ASC001  error</text>
+  <text x="80" y="485" fill="#cbd5e1" font-family="Consolas,Menlo,monospace" font-size="18">POSIX environment assignment is incompatible with PowerShell</text>
+  <text x="80" y="527" fill="#fda4af" font-family="Consolas,Menlo,monospace" font-size="19">AGENTS.md:12:1  ASC018  error</text>
+  <text x="80" y="557" fill="#cbd5e1" font-family="Consolas,Menlo,monospace" font-size="18">POSIX source builtin is incompatible with PowerShell</text>
+  <rect x="828" y="388" width="196" height="47" rx="24" fill="#064e3b" stroke="#34d399"/>
+  <text x="926" y="419" text-anchor="middle" fill="#a7f3d0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" font-weight="700">static · offline</text>
+</svg>

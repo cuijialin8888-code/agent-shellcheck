@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">agent-shellcheck logo</title>
+  <desc id="desc">A terminal prompt split into blue and green shell paths with a check mark.</desc>
+  <defs>
+    <linearGradient id="panel" x1="16" y1="8" x2="146" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#172554"/>
+      <stop offset="1" stop-color="#07111f"/>
+    </linearGradient>
+    <linearGradient id="route" x1="43" y1="61" x2="126" y2="113" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#020617" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect x="12" y="12" width="136" height="136" rx="32" fill="url(#panel)" filter="url(#shadow)"/>
+  <rect x="22" y="22" width="116" height="116" rx="24" fill="none" stroke="#334155" stroke-width="2"/>
+  <circle cx="42" cy="42" r="4" fill="#fb7185"/>
+  <circle cx="56" cy="42" r="4" fill="#fbbf24"/>
+  <circle cx="70" cy="42" r="4" fill="#34d399"/>
+  <path d="M39 63 55 79 39 95" fill="none" stroke="#f8fafc" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M67 98h21" fill="none" stroke="#94a3b8" stroke-width="8" stroke-linecap="round"/>
+  <path d="M73 69h13c10 0 12 14 22 14h11" fill="none" stroke="url(#route)" stroke-width="8" stroke-linecap="round"/>
+  <path d="m101 106 10 10 20-26" fill="none" stroke="#34d399" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

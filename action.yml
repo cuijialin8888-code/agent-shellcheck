@@ -1,0 +1,57 @@
+name: Agent ShellCheck
+description: Catch cross-shell portability bugs in agent instruction files.
+author: cuijialin8888-code
+
+branding:
+  icon: check-circle
+  color: blue
+
+inputs:
+  args:
+    description: Arguments passed to agent-shellcheck (defaults to scanning the repository).
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Install agent-shellcheck
+      shell: python
+      env:
+        AGENT_SHELLCHECK_ACTION_PATH: ${{ github.action_path }}
+      run: |
+        import os
+        import subprocess
+        import sys
+
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--disable-pip-version-check",
+                "--no-deps",
+                os.environ["AGENT_SHELLCHECK_ACTION_PATH"],
+            ],
+            check=True,
+        )
+
+    - name: Scan agent instructions
+      shell: python
+      env:
+        AGENT_SHELLCHECK_ARGS: ${{ inputs.args }}
+      run: |
+        import os
+        import shlex
+        import shutil
+        import subprocess
+
+        executable = shutil.which("agent-shellcheck")
+        if executable is None:
+            raise SystemExit("agent-shellcheck entry point was not installed")
+        arguments = shlex.split(
+            os.environ["AGENT_SHELLCHECK_ARGS"],
+            posix=os.name != "nt",
+        )
+        subprocess.run([executable, *arguments], check=True)

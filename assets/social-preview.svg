@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">agent-shellcheck social preview</title>
+  <desc id="desc">ShellCheck for AGENTS.md and SKILL.md, with cross-platform command paths.</desc>
+  <defs>
+    <linearGradient id="bg" x1="70" y1="40" x2="1210" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#172554"/>
+      <stop offset=".55" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="line" x1="750" y1="230" x2="1110" y2="465" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="25"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1055" cy="113" r="105" fill="#0ea5e9" opacity=".12" filter="url(#glow)"/>
+  <circle cx="1150" cy="520" r="120" fill="#10b981" opacity=".12" filter="url(#glow)"/>
+  <g opacity=".16" stroke="#94a3b8">
+    <path d="M0 96h1280M0 192h1280M0 288h1280M0 384h1280M0 480h1280M0 576h1280"/>
+    <path d="M96 0v640M192 0v640M288 0v640M384 0v640M480 0v640M576 0v640M672 0v640M768 0v640M864 0v640M960 0v640M1056 0v640M1152 0v640"/>
+  </g>
+  <rect x="72" y="72" width="88" height="88" rx="24" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+  <path d="m94 101 14 15-14 15M117 135h20" fill="none" stroke="#f8fafc" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="141" cy="100" r="7" fill="#34d399"/>
+  <text x="188" y="135" fill="#f8fafc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="39" font-weight="760">agent-shellcheck</text>
+  <text x="72" y="256" fill="#f8fafc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="54" font-weight="780">ShellCheck for</text>
+  <text x="72" y="322" fill="#f8fafc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="54" font-weight="780">AGENTS.md + SKILL.md</text>
+  <text x="74" y="382" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25">Catch Bash · PowerShell · cmd · path · WSL portability bugs</text>
+  <text x="74" y="420" fill="#cbd5e1" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="25">before your users do.</text>
+  <g transform="translate(74 484)">
+    <rect width="152" height="42" rx="21" fill="#082f49" stroke="#38bdf8"/>
+    <text x="76" y="27" text-anchor="middle" fill="#bae6fd" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700">STATIC</text>
+    <rect x="168" width="152" height="42" rx="21" fill="#064e3b" stroke="#34d399"/>
+    <text x="244" y="27" text-anchor="middle" fill="#a7f3d0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700">OFFLINE</text>
+    <rect x="336" width="194" height="42" rx="21" fill="#1e293b" stroke="#64748b"/>
+    <text x="433" y="27" text-anchor="middle" fill="#e2e8f0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16" font-weight="700">READ-ONLY</text>
+  </g>
+  <g transform="translate(742 154)">
+    <rect width="448" height="350" rx="28" fill="#020617" stroke="#334155" stroke-width="2"/>
+    <circle cx="35" cy="34" r="7" fill="#fb7185"/>
+    <circle cx="60" cy="34" r="7" fill="#fbbf24"/>
+    <circle cx="85" cy="34" r="7" fill="#34d399"/>
+    <text x="34" y="105" fill="#38bdf8" font-family="Consolas,Menlo,monospace" font-size="21">bash</text>
+    <text x="34" y="143" fill="#94a3b8" font-family="Consolas,Menlo,monospace" font-size="18">source .venv/bin/activate</text>
+    <path d="M49 174h133c48 0 42 85 112 85h89" fill="none" stroke="url(#line)" stroke-width="8" stroke-linecap="round"/>
+    <text x="34" y="312" fill="#38bdf8" font-family="Consolas,Menlo,monospace" font-size="21">powershell</text>
+    <path d="m325 92 19 20 38-47" fill="none" stroke="#34d399" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="34" y="338" fill="#94a3b8" font-family="Consolas,Menlo,monospace" font-size="18">. .venv\Scripts\Activate.ps1</text>
+  </g>
+</svg>
