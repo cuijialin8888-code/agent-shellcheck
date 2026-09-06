@@ -29,6 +29,12 @@ Run a targeted smoke test against the included example:
 agent-shellcheck examples --target portable
 ```
 
+## Routine maintenance
+
+- Upgrade CI actions only through verified immutable commit pins and wait for the public multi-platform matrix to finish successfully.
+- Preserve deterministic, offline, read-only scanning; maintenance must not add command execution, network access, telemetry, or automatic rewriting.
+- Keep diagnostic IDs, JSON/SARIF fields, and documented false-positive controls stable unless a versioned behavior change is explicitly documented.
+
 ## Pull requests
 
 1. Keep the patch small and explain the user-facing behavior.
