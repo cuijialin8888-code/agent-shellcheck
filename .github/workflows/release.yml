@@ -36,8 +36,11 @@ jobs:
           .release-smoke/bin/agent-shellcheck --help
           .release-smoke/bin/python -m pip check
 
-      - name: Upload distributions
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - name: Generate SHA-256 checksums
+        working-directory: dist
+        run: sha256sum *.whl *.tar.gz > SHA256SUMS
+
+      - name: Upload distributions        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: release-distributions
           path: dist/*
