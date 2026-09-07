@@ -223,24 +223,35 @@ def _github_data(value: str) -> str:
 
 def _github_path(result: ScanResult, finding: Finding) -> str:
     absolute = (result.root / Path(finding.relative_path)).resolve()
-    workspace = _github_workspace_root()
-    try:
-        return absolute.relative_to(workspace).as_posix()
-    except ValueError:
-        return finding.relative_path.replace("\\", "/")
+    for workspace in _github_workspace_roots():
+        try:
+            return absolute.relative_to(workspace).as_posix()
+        except ValueError:
+            continue
+    return finding.relative_path.replace("\\", "/")
 
 
-def _github_workspace_root() -> Path:
+def _github_workspace_roots() -> tuple[Path, ...]:
+    candidates: list[Path] = []
     configured = os.environ.get("GITHUB_WORKSPACE")
     if configured:
-        return Path(configured).expanduser().resolve()
+        candidates.append(Path(configured).expanduser().resolve())
+
     current = Path.cwd().resolve()
+    repository_root: Path | None = None
+    search = current
     while True:
-        if (current / ".git").exists():
-            return current
-        if current.parent == current:
-            return Path.cwd().resolve()
-        current = current.parent
+        if (search / ".git").exists():
+            repository_root = search
+            break
+        if search.parent == search:
+            break
+        search = search.parent
+
+    if repository_root is not None:
+        candidates.append(repository_root)
+    candidates.append(current)
+    return tuple(dict.fromkeys(candidates))
 
 
 def _github_property(value: str) -> str:

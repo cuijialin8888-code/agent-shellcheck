@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 
 from _support import parsed_stdout, run_cli, write_text
 from agent_shellcheck.config import ConfigError, find_project_config, load_project_config
@@ -160,7 +162,9 @@ class ProjectConfigTests(unittest.TestCase):
                 json.dumps({"version": 1, "paths": ["docs"], "target": "portable"}),
             )
 
-            process = run_cli(["--format", "github"], cwd=nested)
+            unrelated_workspace = Path(__file__).resolve().parents[1]
+            with patch.dict(os.environ, {"GITHUB_WORKSPACE": str(unrelated_workspace)}):
+                process = run_cli(["--format", "github"], cwd=nested)
 
             self.assertEqual(process.returncode, 1, process.stderr)
             self.assertIn("file=docs/AGENTS.md,line=2,col=1", process.stdout)
