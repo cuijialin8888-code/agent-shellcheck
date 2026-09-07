@@ -112,6 +112,7 @@ Produce automation-friendly reports:
 agent-shellcheck . --format json --output report.json
 agent-shellcheck . --format sarif --output report.sarif
 agent-shellcheck . --format html --output report.html
+agent-shellcheck . --format github
 ```
 
 Tune CI policy without changing the reported evidence:
@@ -126,6 +127,25 @@ shown, while `--fail-on` controls when a completed scan returns a failing status
 
 Run `agent-shellcheck --help` or open the [CLI reference](docs/cli.md) for the
 complete command contract.
+
+### Repository policy
+
+Commit a `.agent-shellcheck.json` file to keep local runs and CI on one policy:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/cuijialin8888-code/agent-shellcheck/v0.2.0/schemas/config.schema.json",
+  "version": 1,
+  "target": "portable",
+  "minSeverity": "warning",
+  "failOn": "error",
+  "exclude": ["generated/**", "vendor/**"]
+}
+```
+
+CLI flags override repository values. `agent-shellcheck --show-config` explains
+the effective policy without scanning, and `--no-config` provides a clean
+diagnostic bypass. See [repository configuration](docs/configuration.md).
 
 ### Targets
 
@@ -162,6 +182,7 @@ not followed during discovery.
 | `sarif` | GitHub code-scanning annotations |
 | `markdown` | Job summaries and review comments |
 | `html` | A self-contained offline report |
+| `github` | Native GitHub Actions annotations |
 
 Read the [output contract](docs/outputs.md) or copy a ready-to-pin
 [GitHub Actions workflow](docs/ci.md).
@@ -169,10 +190,13 @@ Read the [output contract](docs/outputs.md) or copy a ready-to-pin
 The repository also ships a zero-Node composite action:
 
 ```yaml
-- uses: cuijialin8888-code/agent-shellcheck@v0.1.0
+- uses: cuijialin8888-code/agent-shellcheck@v0.2.0
   with:
-    args: ". --target portable"
+    args: ". --target portable --format github"
 ```
+
+With v0.2, omitting `args` scans the repository and emits native annotations by
+default. The action automatically honors `.agent-shellcheck.json`.
 
 ## Why teams can trust the scan
 

@@ -21,7 +21,9 @@ def write_text(path: Path, text: str, *, newline: str | None = None) -> Path:
     return path
 
 
-def run_cli(arguments: Iterable[str]) -> subprocess.CompletedProcess[str]:
+def run_cli(
+    arguments: Iterable[str], *, cwd: Path | None = None
+) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     existing = env.get("PYTHONPATH")
     env["PYTHONPATH"] = (
@@ -29,7 +31,7 @@ def run_cli(arguments: Iterable[str]) -> subprocess.CompletedProcess[str]:
     )
     return subprocess.run(
         [sys.executable, "-m", "agent_shellcheck", *arguments],
-        cwd=PROJECT_ROOT,
+        cwd=cwd or PROJECT_ROOT,
         env=env,
         capture_output=True,
         text=True,

@@ -33,7 +33,7 @@ a shell, interpreter, network service, or model.
 2. **Offline:** runtime analysis does not require a network connection.
 3. **Read-only by default:** input files are never rewritten. Only an explicitly
    requested report path may be created or replaced.
-4. **Deterministic:** file discovery and findings use stable ordering.
+4. **Deterministic:** file discovery, policy precedence, and findings use stable ordering.
 5. **Bounded:** ignored dependency/build directories, symlinks, and oversized
    files are not recursively explored.
 6. **Explainable:** every finding names a stable rule, exact source location,
@@ -70,3 +70,10 @@ directories are skipped. Symbolic links are not followed, and files larger than
 
 These boundaries keep the tool suitable for untrusted repositories and make
 findings easier to reproduce.
+
+Repository policy is parsed locally from bounded UTF-8 JSON. Schema references
+are metadata for editors; the scanner never resolves them over the network.
+Unknown keys fail closed so a misspelled safety bound or ignore rule cannot be
+silently accepted. Repository-controlled paths are confined to the policy
+directory, including after symlink resolution, so an untrusted checkout cannot
+redirect a default scan into parent or absolute locations.

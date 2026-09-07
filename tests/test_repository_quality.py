@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import json
 import struct
 from pathlib import Path
 import sys
@@ -48,6 +49,20 @@ class RepositoryQualityTests(unittest.TestCase):
         self.assertEqual(data[:8], b"\x89PNG\r\n\x1a\n")
         width, height = struct.unpack(">II", data[16:24])
         self.assertEqual((width, height), (1280, 640))
+
+    def test_configuration_schema_and_example_are_valid_json(self) -> None:
+        schema = json.loads((PROJECT_ROOT / "schemas" / "config.schema.json").read_text(encoding="utf-8"))
+        example = json.loads(
+            (PROJECT_ROOT / "examples" / "agent-shellcheck.example.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(schema["properties"]["version"]["const"], 1)
+        self.assertEqual(example["version"], 1)
+        self.assertIn(example["target"], schema["properties"]["target"]["enum"])
+
+    def test_action_default_keeps_configured_paths_effective(self) -> None:
+        action = (PROJECT_ROOT / "action.yml").read_text(encoding="utf-8")
+        self.assertIn('default: "--format github"', action)
+        self.assertNotIn('default: ". --format github"', action)
 
 
 if __name__ == "__main__":

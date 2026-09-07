@@ -21,15 +21,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: cuijialin8888-code/agent-shellcheck@v0.1.0
+      - uses: cuijialin8888-code/agent-shellcheck@v0.2.0
         with:
-          args: ". --target portable"
+          args: ". --target portable --format github"
 ```
 
 The action installs the pinned checkout without runtime dependencies, then runs
 the scanner. Analysis is offline and does not execute commands discovered in
 instruction files. Fetching the action and Python package source is handled by
 the workflow runner before analysis.
+
+The v0.2 action default is `--format github`, so omitting `args` produces
+native annotations automatically. A repository `.agent-shellcheck.json` policy
+is discovered in either form, including its configured `paths`.
 
 ## GitHub code scanning with SARIF
 
@@ -53,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Produce SARIF
-        uses: cuijialin8888-code/agent-shellcheck@v0.1.0
+        uses: cuijialin8888-code/agent-shellcheck@v0.2.0
         with:
           args: ". --target portable --format sarif --output agent-shellcheck.sarif"
         continue-on-error: true
@@ -74,7 +78,7 @@ Write a report into the GitHub Actions job summary:
 ```yaml
 - name: Scan instruction files
   id: instructions
-  uses: cuijialin8888-code/agent-shellcheck@v0.1.0
+  uses: cuijialin8888-code/agent-shellcheck@v0.2.0
   continue-on-error: true
   with:
     args: ". --target portable --format markdown --output report.md"

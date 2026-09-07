@@ -19,6 +19,9 @@ directories to constrain discovery.
 | `--ignore RULE_ID` | Omit a stable rule ID such as `ASC012`. Repeat to ignore more than one rule. |
 | `--exclude GLOB` | Exclude matching paths during directory discovery. Repeat for more patterns. |
 | `--max-files NUMBER` | Stop bounded discovery from scanning more than this many matching files. |
+| `--config PATH` | Load an explicit `.agent-shellcheck.json`-compatible policy file. |
+| `--no-config` | Disable automatic repository policy discovery. |
+| `--show-config` | Print the effective policy as JSON without scanning. |
 | `--version` | Print the installed version. |
 | `-h`, `--help` | Print built-in help. |
 
@@ -37,6 +40,9 @@ agent-shellcheck . --format sarif --output report.sarif \
 
 # Bound a monorepo scan.
 agent-shellcheck . --exclude "vendor/**" --exclude "generated/**" --max-files 500
+
+# Explain the merged repository policy and CLI overrides.
+agent-shellcheck --show-config
 ```
 
 On PowerShell, use its backtick or a single line instead of copying the POSIX
@@ -52,4 +58,5 @@ backslash continuation from the example above.
   column, and rule.
 
 See [outputs](outputs.md) for the JSON schema overview, SARIF integration, and
-exit-status contract.
+exit-status contract. See [repository policy](configuration.md) to share target,
+severity, ignore, exclusion, path, and scan-bound settings with the whole team.
