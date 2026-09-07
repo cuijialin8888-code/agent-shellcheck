@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import html
 import json
+import os
+from pathlib import Path
 from typing import Any
 
 from .models import Finding, ScanResult
@@ -18,6 +20,7 @@ def render_report(result: ScanResult, output_format: str, version: str) -> str:
         "sarif": render_sarif,
         "markdown": render_markdown,
         "html": render_html,
+        "github": render_github,
     }
     try:
         renderer = renderers[output_format]
@@ -179,6 +182,26 @@ small{{color:#667085}}</style></head><body><h1>agent-shellcheck report</h1>
 </body></html>\n"""
 
 
+def render_github(result: ScanResult, version: str) -> str:
+    del version
+    lines: list[str] = []
+    levels = {"error": "error", "warning": "warning", "info": "notice"}
+    for finding in sorted(result.findings, key=Finding.sort_key):
+        properties = (
+            f"file={_github_property(_github_path(result, finding))},"
+            f"line={finding.line},col={finding.column},title={_github_property(finding.rule_id)}"
+        )
+        message = f"{finding.rule_id}: {finding.message} Evidence: {finding.evidence}"
+        lines.append(f"::{levels[finding.severity.label]} {properties}::{_github_data(message)}")
+    counts = result.counts()
+    lines.append(
+        f"agent-shellcheck: {counts['error']} {_plural(counts['error'], 'error')}, "
+        f"{counts['warning']} {_plural(counts['warning'], 'warning')}, "
+        f"{counts['info']} info in {result.files_scanned} {_plural(result.files_scanned, 'file')}"
+    )
+    return "\n".join(lines) + "\n"
+
+
 def _sarif_level(severity: str) -> str:
     return {"error": "error", "warning": "warning", "info": "note"}[severity]
 
@@ -192,6 +215,36 @@ def _rule_help_markdown(rule) -> str:
 
 def _escape_markdown(value: str) -> str:
     return value.replace("|", "\\|").replace("\n", " ")
+
+
+def _github_data(value: str) -> str:
+    return value.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
+
+def _github_path(result: ScanResult, finding: Finding) -> str:
+    absolute = (result.root / Path(finding.relative_path)).resolve()
+    workspace = _github_workspace_root()
+    try:
+        return absolute.relative_to(workspace).as_posix()
+    except ValueError:
+        return finding.relative_path.replace("\\", "/")
+
+
+def _github_workspace_root() -> Path:
+    configured = os.environ.get("GITHUB_WORKSPACE")
+    if configured:
+        return Path(configured).expanduser().resolve()
+    current = Path.cwd().resolve()
+    while True:
+        if (current / ".git").exists():
+            return current
+        if current.parent == current:
+            return Path.cwd().resolve()
+        current = current.parent
+
+
+def _github_property(value: str) -> str:
+    return _github_data(value).replace(":", "%3A").replace(",", "%2C")
 
 
 def _plural(count: int, noun: str) -> str:

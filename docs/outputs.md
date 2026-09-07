@@ -1,6 +1,6 @@
 # Output formats and automation contract
 
-The same sorted finding set is available in five formats:
+The same sorted finding set is available in six formats:
 
 | Format | Best for | Notes |
 |---|---|---|
@@ -9,12 +9,14 @@ The same sorted finding set is available in five formats:
 | `sarif` | GitHub code scanning | SARIF 2.1.0 with physical locations and rule metadata. |
 | `markdown` | Job summaries and review comments | Human-readable table plus scan totals. |
 | `html` | Sharing an offline report | Self-contained document with no remote assets or scripts. |
+| `github` | Pull-request checks | Native workflow annotations with exact file, line, column, severity, and rule ID. |
 
 Choose a format with `--format` and write it with `--output`:
 
 ```console
 agent-shellcheck . --target portable --format json --output report.json
 agent-shellcheck . --target portable --format sarif --output report.sarif
+agent-shellcheck . --target portable --format github
 ```
 
 Without `--output`, the report is written to standard output. Diagnostics and
@@ -39,7 +41,7 @@ The top-level object contains:
 ```json
 {
   "schemaVersion": 1,
-  "tool": {"name": "agent-shellcheck", "version": "0.1.0"},
+  "tool": {"name": "agent-shellcheck", "version": "0.2.0"},
   "root": "/work/project",
   "target": "portable",
   "summary": {
@@ -71,4 +73,5 @@ on field semantics.
 
 Machine-readable reports go to standard output or the requested output file;
 operational errors go to standard error. This keeps JSON and SARIF valid when
-used in pipelines.
+used in pipelines. The `github` format is intended for workflow standard output
+so GitHub can turn its escaped workflow commands into annotations.

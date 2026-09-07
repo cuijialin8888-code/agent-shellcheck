@@ -5,6 +5,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from _support import parsed_stdout, run_cli, write_text
+from agent_shellcheck.report import _github_data, _github_property
 
 
 class CliAndReportTests(unittest.TestCase):
@@ -94,6 +95,29 @@ class CliAndReportTests(unittest.TestCase):
 
             self.assertEqual(ignored.returncode, 0, ignored.stderr)
             self.assertEqual(parsed_stdout(ignored)["summary"]["findingCount"], 0)
+
+    def test_github_format_emits_native_annotations_with_escaped_properties(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = write_text(
+                Path(directory) / "bad,name.md",
+                "```powershell\nexport MODE=dev\n```\n",
+            )
+
+            process = run_cli([str(path), "--format", "github"])
+
+            self.assertEqual(process.returncode, 1, process.stderr)
+            self.assertIn("::error file=bad%2Cname.md,line=2,col=1,title=ASC001::", process.stdout)
+            self.assertIn("agent-shellcheck: 1 error", process.stdout)
+
+    def test_github_workflow_commands_escape_control_sequences(self) -> None:
+        self.assertEqual(
+            _github_data("100%\r\n::warning"),
+            "100%25%0D%0A::warning",
+        )
+        self.assertEqual(
+            _github_property("C:\\repo,docs"),
+            "C%3A\\repo%2Cdocs",
+        )
 
 
 if __name__ == "__main__":

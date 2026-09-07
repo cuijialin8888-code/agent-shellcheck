@@ -1,0 +1,11 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cuijialin8888-code/agent-shellcheck/v0.2.0/schemas/config.schema.json",
+  "version": 1,
+  "paths": ["."],
+  "target": "portable",
+  "minSeverity": "warning",
+  "failOn": "error",
+  "ignore": [],
+  "exclude": ["generated/**", "vendor/**"],
+  "maxFiles": 1000
+}

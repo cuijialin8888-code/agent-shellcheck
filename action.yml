@@ -10,7 +10,7 @@ inputs:
   args:
     description: Arguments passed to agent-shellcheck (defaults to scanning the repository).
     required: false
-    default: "."
+    default: "--format github"
 
 runs:
   using: composite

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/cuijialin8888-code/agent-shellcheck/v0.2.0/schemas/config.schema.json",
+  "title": "agent-shellcheck project policy",
+  "description": "Repository-level scan policy for agent-shellcheck.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {"type": "string"},
+    "version": {"const": 1},
+    "paths": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "target": {
+      "enum": ["auto", "portable", "bash-linux", "bash-wsl", "powershell-windows", "cmd-windows", "posix", "windows"]
+    },
+    "minSeverity": {"enum": ["info", "warning", "error"]},
+    "failOn": {"enum": ["none", "info", "warning", "error"]},
+    "ignore": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^ASC[0-9]{3}$"},
+      "uniqueItems": true
+    },
+    "exclude": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "maxFiles": {"type": "integer", "minimum": 1}
+  }
+}

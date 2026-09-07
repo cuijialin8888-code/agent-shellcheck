@@ -106,6 +106,7 @@ agent-shellcheck . --target bash-wsl
 agent-shellcheck . --format json --output report.json
 agent-shellcheck . --format sarif --output report.sarif
 agent-shellcheck . --format html --output report.html
+agent-shellcheck . --format github
 ```
 
 在不改变诊断证据的前提下调整 CI 策略：
@@ -119,6 +120,25 @@ agent-shellcheck . --ignore ASC012 --exclude "vendor/**" --max-files 500
 决定完成扫描后何时返回失败状态。
 
 运行 `agent-shellcheck --help` 或打开 [CLI 参考](docs/cli.md)查看完整命令契约。
+
+### 仓库级策略
+
+提交一个 `.agent-shellcheck.json`，让本地运行与 CI 共用同一套策略：
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/cuijialin8888-code/agent-shellcheck/v0.2.0/schemas/config.schema.json",
+  "version": 1,
+  "target": "portable",
+  "minSeverity": "warning",
+  "failOn": "error",
+  "exclude": ["generated/**", "vendor/**"]
+}
+```
+
+命令行参数优先于仓库配置。`agent-shellcheck --show-config` 可以在不扫描文件的
+情况下解释最终策略，`--no-config` 可用于隔离配置问题。详见
+[仓库配置说明](docs/configuration.md)。
 
 ### 目标环境
 
@@ -152,16 +172,20 @@ agent-shellcheck . --ignore ASC012 --exclude "vendor/**" --max-files 500
 | `sarif` | GitHub 代码扫描标注 |
 | `markdown` | CI 摘要与评审评论 |
 | `html` | 可离线分享的自包含报告 |
+| `github` | GitHub Actions 原生行内标注 |
 
 参阅[输出契约](docs/outputs.md)或直接复制[GitHub Actions 示例](docs/ci.md)。
 
 仓库还提供不依赖 Node 的复合 Action：
 
 ```yaml
-- uses: cuijialin8888-code/agent-shellcheck@v0.1.0
+- uses: cuijialin8888-code/agent-shellcheck@v0.2.0
   with:
-    args: ". --target portable"
+    args: ". --target portable --format github"
 ```
+
+从 v0.2 起，不填写 `args` 时会默认扫描仓库并输出原生标注；Action 也会自动
+读取 `.agent-shellcheck.json`。
 
 ## 扫描的可信边界
 

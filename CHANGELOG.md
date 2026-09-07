@@ -6,6 +6,22 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-07
+
+### Added
+
+- Repository-level `.agent-shellcheck.json` policy with bounded discovery,
+  strict validation, a published JSON Schema, and `--config`, `--no-config`,
+  and `--show-config` controls.
+- Native GitHub Actions annotations through `--format github`, including exact
+  file, line, column, severity, and stable rule ID.
+
+### Changed
+
+- The composite action now emits native pull-request annotations by default.
+- Configuration values follow an explicit CLI > repository > built-in
+  precedence contract while preserving zero runtime dependencies.
+
 ## [0.1.0] - 2026-08-23
 
 ### Added
@@ -20,5 +36,6 @@ All notable changes to this project are documented here. The format follows
 - Text, JSON, SARIF, Markdown, and self-contained HTML reports.
 - Deterministic discovery with no command execution and no runtime dependencies.
 
-[Unreleased]: https://github.com/cuijialin8888-code/agent-shellcheck/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/cuijialin8888-code/agent-shellcheck/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/cuijialin8888-code/agent-shellcheck/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/cuijialin8888-code/agent-shellcheck/releases/tag/v0.1.0
