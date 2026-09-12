@@ -15,7 +15,7 @@ directories to constrain discovery.
 | `--format FORMAT` | Emit `text` (default), `json`, `sarif`, `markdown`, or `html`. |
 | `--output PATH` | Write the report to a file instead of standard output. Source instruction files are never modified. |
 | `--min-severity LEVEL` | Show findings at or above `info`, `warning`, or `error`. |
-| `--fail-on LEVEL` | Return status `1` when a finding reaches this level. Default: `error`. |
+| `--fail-on LEVEL` | Return status `1` when any non-ignored finding reaches this level. Default: `error`. |
 | `--ignore RULE_ID` | Omit a stable rule ID such as `ASC012`. Repeat to ignore more than one rule. |
 | `--exclude GLOB` | Exclude matching paths during directory discovery. Repeat for more patterns. |
 | `--max-files NUMBER` | Stop bounded discovery from scanning more than this many matching files. |
@@ -47,6 +47,14 @@ agent-shellcheck --show-config
 
 On PowerShell, use its backtick or a single line instead of copying the POSIX
 backslash continuation from the example above.
+
+## Display and failure thresholds
+
+`--min-severity` filters the rendered report only. `--fail-on` evaluates every
+non-ignored finding from the completed scan, including a finding hidden by a
+higher display threshold. For example, `--min-severity error --fail-on warning`
+can return status `1` with no findings rendered. Lower the display threshold
+when the CI log also needs the blocking evidence.
 
 ## Output discipline
 

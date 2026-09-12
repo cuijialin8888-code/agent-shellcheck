@@ -32,7 +32,7 @@ def scan_paths(
         raise ValueError(f"unknown rule ID: {rendered}")
 
     discovery = discover_files(inputs, excludes=excludes, max_files=max_files)
-    findings: list[Finding] = []
+    all_findings: list[Finding] = []
     block_count = 0
     snippet_count = 0
 
@@ -58,16 +58,16 @@ def scan_paths(
                     "resolvedTarget": canonical_target(target),
                 },
             )
-            if finding.severity >= min_severity:
-                findings.append(finding)
+            all_findings.append(finding)
 
         for snippet in snippets:
             for finding in evaluate_snippet(snippet, target):
-                if finding.rule_id in ignored or finding.severity < min_severity:
+                if finding.rule_id in ignored:
                     continue
-                findings.append(finding)
+                all_findings.append(finding)
 
-    findings.sort(key=Finding.sort_key)
+    all_findings.sort(key=Finding.sort_key)
+    findings = [finding for finding in all_findings if finding.severity >= min_severity]
     return ScanResult(
         root=discovery.root,
         target=canonical_target(target),
@@ -77,4 +77,5 @@ def scan_paths(
         findings=findings,
         skipped_files=discovery.skipped_files,
         scanned_paths=discovery.files,
+        all_findings=all_findings,
     )

@@ -10,6 +10,11 @@ All notable changes to this project are documented here. The format follows
 
 - A CI adoption guide covering policy files, native annotations, permissions, and immutable release pinning.
 
+### Fixed
+
+- `--fail-on` now evaluates all non-ignored findings even when `--min-severity`
+  hides them from the rendered report.
+
 ## [0.2.0] - 2026-09-07
 
 ### Added

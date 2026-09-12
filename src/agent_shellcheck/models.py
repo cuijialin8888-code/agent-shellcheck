@@ -126,12 +126,17 @@ class ScanResult:
     findings: list[Finding]
     skipped_files: int = 0
     scanned_paths: tuple[Path, ...] = ()
+    all_findings: list[Finding] = field(default_factory=list, repr=False)
 
     def counts(self) -> dict[str, int]:
         counts = {"error": 0, "warning": 0, "info": 0}
         for finding in self.findings:
             counts[finding.severity.label] += 1
         return counts
+
+    def has_findings_at_or_above(self, threshold: Severity) -> bool:
+        """Evaluate a failure policy without widening the rendered report."""
+        return any(finding.severity >= threshold for finding in self.all_findings)
 
     def to_dict(self, version: str) -> dict[str, Any]:
         ordered = sorted(self.findings, key=Finding.sort_key)

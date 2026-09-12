@@ -117,7 +117,8 @@ agent-shellcheck . --ignore ASC012 --exclude "vendor/**" --max-files 500
 ```
 
 默认失败阈值是 `error`。`--min-severity` 决定显示哪些结果，`--fail-on`
-决定完成扫描后何时返回失败状态。
+决定完成扫描后何时返回失败状态。失败判定会使用全部未忽略的发现项，
+即使其中一部分因更高的显示阈值而未出现在报告中。
 
 运行 `agent-shellcheck --help` 或打开 [CLI 参考](docs/cli.md)查看完整命令契约。
 

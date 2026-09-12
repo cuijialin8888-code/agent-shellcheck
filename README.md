@@ -124,6 +124,8 @@ agent-shellcheck . --ignore ASC012 --exclude "vendor/**" --max-files 500
 
 The default failure threshold is `error`. `--min-severity` controls what is
 shown, while `--fail-on` controls when a completed scan returns a failing status.
+The failure decision uses every non-ignored finding, including findings hidden
+from the report by a higher display threshold.
 
 Run `agent-shellcheck --help` or open the [CLI reference](docs/cli.md) for the
 complete command contract.

@@ -96,6 +96,28 @@ class CliAndReportTests(unittest.TestCase):
             self.assertEqual(ignored.returncode, 0, ignored.stderr)
             self.assertEqual(parsed_stdout(ignored)["summary"]["findingCount"], 0)
 
+    def test_fail_on_uses_findings_hidden_by_minimum_severity(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = write_text(
+                Path(directory) / "AGENTS.md",
+                "```bash\ncat C:\\workspace\\instructions.md\n```\n",
+            )
+
+            process = run_cli(
+                [
+                    str(path),
+                    "--format",
+                    "json",
+                    "--min-severity",
+                    "error",
+                    "--fail-on",
+                    "warning",
+                ]
+            )
+
+            self.assertEqual(process.returncode, 1, process.stderr)
+            self.assertEqual(parsed_stdout(process)["summary"]["findingCount"], 0)
+
     def test_github_format_emits_native_annotations_with_escaped_properties(self) -> None:
         with TemporaryDirectory() as directory:
             path = write_text(

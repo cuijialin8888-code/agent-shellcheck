@@ -107,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     if effective["failOn"] == "none":
         return 0
     threshold = Severity.parse(effective["failOn"])
-    return 1 if any(finding.severity >= threshold for finding in result.findings) else 0
+    return 1 if result.has_findings_at_or_above(threshold) else 0
 
 
 def _effective_policy(args: argparse.Namespace, config: ProjectConfig) -> dict[str, object]:
