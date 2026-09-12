@@ -9,7 +9,7 @@
     <img alt="Runtime dependencies: zero" src="https://img.shields.io/badge/runtime%20dependencies-0-10b981">
     <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-0f172a"></a>
   </p>
-  <p><a href="README.zh-CN.md">简体中文</a> · <a href="#30-second-start">Quick start</a> · <a href="docs/cli.md">CLI</a> · <a href="docs/rules.md">Rules</a> · <a href="docs/ci.md">CI</a></p>
+  <p><a href="README.zh-CN.md">简体中文</a> · <a href="#30-second-start">Quick start</a> · <a href="docs/cli.md">CLI</a> · <a href="docs/rules.md">Rules</a> · <a href="docs/ci.md">CI</a> · <a href="docs/ci-adoption.md">CI adoption</a></p>
 </div>
 
 Agent instructions are executable documentation. A perfectly reasonable setup
@@ -186,6 +186,8 @@ not followed during discovery.
 
 Read the [output contract](docs/outputs.md) or copy a ready-to-pin
 [GitHub Actions workflow](docs/ci.md).
+
+For policy configuration, annotations, permissions, and release pinning, see [CI adoption](docs/ci-adoption.md).
 
 The repository also ships a zero-Node composite action:
 

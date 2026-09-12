@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- A CI adoption guide covering policy files, native annotations, permissions, and immutable release pinning.
+
 ## [0.2.0] - 2026-09-07
 
 ### Added
