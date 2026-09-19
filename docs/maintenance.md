@@ -12,3 +12,5 @@ Keep the scanner static, deterministic, offline, and free of runtime dependencie
 ## Review log
 
 - 2026-09-12: reviewed public `main`, open Issues/PRs, and recent Actions; no open Issues/PRs were present, and the latest main-branch CI run (`34677409560`) and latest Release workflow run (`34128320819`) completed successfully.
+
+- 2026-09-19: reviewed public `main`, open Issues/PRs, and recent Actions; no open Issues/PRs were present, and the latest main-branch CI run (`34685066489`) and latest Release workflow run (`34128320819`) completed successfully.
