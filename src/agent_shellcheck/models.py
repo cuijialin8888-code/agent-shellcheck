@@ -126,6 +126,7 @@ class ScanResult:
     findings: list[Finding]
     skipped_files: int = 0
     scanned_paths: tuple[Path, ...] = ()
+    baseline_suppressed: int = 0
     all_findings: list[Finding] = field(default_factory=list, repr=False)
 
     def counts(self) -> dict[str, int]:
@@ -152,6 +153,7 @@ class ScanResult:
                 "snippetsScanned": self.snippets_scanned,
                 "skippedFiles": self.skipped_files,
                 "findingCount": len(ordered),
+                "baselineSuppressed": self.baseline_suppressed,
                 **counts,
             },
             "findings": [finding.to_dict() for finding in ordered],

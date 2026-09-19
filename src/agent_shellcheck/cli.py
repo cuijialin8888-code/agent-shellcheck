@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 
 from . import __version__
+from .baseline import BaselineError, finding_key, load_baseline
 from .config import (
     DEFAULT_FAIL_ON,
     DEFAULT_MAX_FILES,
@@ -34,6 +35,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--target", choices=TARGETS, help="target for generic command snippets")
     parser.add_argument("--format", choices=FORMATS, default="text", dest="output_format", help="report format")
     parser.add_argument("--output", type=Path, help="write the report to this file")
+    parser.add_argument(
+        "--baseline",
+        type=Path,
+        metavar="PATH",
+        help="suppress findings already present in a previous JSON report",
+    )
     parser.add_argument(
         "--min-severity",
         choices=("info", "warning", "error"),
@@ -89,6 +96,16 @@ def main(argv: list[str] | None = None) -> int:
             ignore_rules=ignored,
             max_files=effective["maxFiles"],
         )
+        if args.baseline:
+            baseline = load_baseline(args.baseline)
+            before = len(result.all_findings)
+            result.findings = [
+                finding for finding in result.findings if finding_key(finding) not in baseline
+            ]
+            result.all_findings = [
+                finding for finding in result.all_findings if finding_key(finding) not in baseline
+            ]
+            result.baseline_suppressed = before - len(result.all_findings)
         report = render_report(result, args.output_format, __version__)
         if args.output:
             output = args.output.expanduser().resolve()
@@ -100,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
                 handle.write(report)
         else:
             sys.stdout.write(report)
-    except (DiscoveryError, OSError, ValueError) as exc:
+    except (BaselineError, DiscoveryError, OSError, ValueError) as exc:
         print(f"agent-shellcheck: {exc}", file=sys.stderr)
         return 2
 

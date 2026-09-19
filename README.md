@@ -149,6 +149,18 @@ CLI flags override repository values. `agent-shellcheck --show-config` explains
 the effective policy without scanning, and `--no-config` provides a clean
 diagnostic bypass. See [repository configuration](docs/configuration.md).
 
+For incremental CI adoption, save a JSON report and use it as a baseline on
+the next run:
+
+```console
+agent-shellcheck . --format json --output baseline.json --fail-on none
+agent-shellcheck . --baseline baseline.json --format github
+```
+
+Baseline identities use rule, repository-relative path, message, and evidence;
+line moves do not re-open an otherwise unchanged finding. New findings remain
+visible and still participate in `--fail-on`.
+
 ### Targets
 
 | Target | Interpretation of generic or unlabeled command snippets |

@@ -118,6 +118,35 @@ class CliAndReportTests(unittest.TestCase):
             self.assertEqual(process.returncode, 1, process.stderr)
             self.assertEqual(parsed_stdout(process)["summary"]["findingCount"], 0)
 
+    def test_baseline_suppresses_existing_findings_but_keeps_new_findings(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            baseline_path = root / "baseline.json"
+            first_path = write_text(root / "first.md", "```console\nexport MODE=dev\n```\n")
+            first = run_cli([str(first_path), "--format", "json", "--target", "portable"])
+            self.assertEqual(first.returncode, 1, first.stderr)
+            baseline_path.write_text(first.stdout, encoding="utf-8")
+
+            second_path = write_text(root / "second.md", "```console\nexport MODE=dev\n```\n")
+            process = run_cli(
+                [
+                    str(first_path),
+                    str(second_path),
+                    "--format",
+                    "json",
+                    "--target",
+                    "portable",
+                    "--baseline",
+                    str(baseline_path),
+                ]
+            )
+
+            self.assertEqual(process.returncode, 1, process.stderr)
+            payload = parsed_stdout(process)
+            self.assertEqual(payload["summary"]["baselineSuppressed"], 1)
+            self.assertEqual(payload["summary"]["findingCount"], 1)
+            self.assertEqual(payload["findings"][0]["path"], "second.md")
+
     def test_github_format_emits_native_annotations_with_escaped_properties(self) -> None:
         with TemporaryDirectory() as directory:
             path = write_text(

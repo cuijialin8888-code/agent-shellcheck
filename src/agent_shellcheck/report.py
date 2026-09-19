@@ -46,6 +46,8 @@ def render_text(result: ScanResult, version: str) -> str:
         f"{counts['error']} errors, {counts['warning']} warnings, {counts['info']} info "
         f"in {result.files_scanned} {_plural(result.files_scanned, 'file')}"
     )
+    if result.baseline_suppressed:
+        lines.append(f"Baseline suppressed: {result.baseline_suppressed}")
     return "\n".join(lines) + "\n"
 
 
@@ -116,6 +118,7 @@ def render_sarif(result: ScanResult, version: str) -> str:
                     }
                 },
                 "results": results,
+                "properties": {"baselineSuppressed": result.baseline_suppressed},
             }
         ],
     }
@@ -134,6 +137,8 @@ def render_markdown(result: ScanResult, version: str) -> str:
         f"**{counts['error']} errors · {counts['warning']} warnings · {counts['info']} info**",
         "",
     ]
+    if result.baseline_suppressed:
+        lines.extend([f"Baseline suppressed: **{result.baseline_suppressed}**", ""])
     if not result.findings:
         lines.append("No findings.")
         return "\n".join(lines) + "\n"

@@ -141,6 +141,15 @@ agent-shellcheck . --ignore ASC012 --exclude "vendor/**" --max-files 500
 情况下解释最终策略，`--no-config` 可用于隔离配置问题。详见
 [仓库配置说明](docs/configuration.md)。
 
+渐进接入 CI 时，可以先保存一次 JSON 报告，再把它作为基线：
+
+```console
+agent-shellcheck . --format json --output baseline.json --fail-on none
+agent-shellcheck . --baseline baseline.json --format github
+```
+
+基线按规则、仓库相对路径、消息和证据识别发现项；仅行号移动不会重新打开未变化的问题。新发现仍会显示，并继续参与 `--fail-on` 判定。
+
 ### 目标环境
 
 | 目标 | 如何解释通用或未标注命令 |
