@@ -266,3 +266,13 @@ repository's structured issue forms.
 ## License
 
 [MIT](LICENSE) · Built for people and coding agents who work across shells.
+
+## Complete incremental baselines
+
+On `main` (unreleased), `--write-baseline baseline.json` saves every non-ignored finding, including severities hidden by `--min-severity`. The ordinary report and `--fail-on` exit policy remain unchanged. Use `--baseline baseline.json` in later runs to report new findings. Reading and writing a baseline are mutually exclusive; writing a report cannot overwrite its input baseline, policy file, or scanned instructions.
+
+```console
+agent-shellcheck . --write-baseline baseline.json --fail-on none
+agent-shellcheck . --baseline baseline.json --fail-on warning
+```
+

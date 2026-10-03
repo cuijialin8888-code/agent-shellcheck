@@ -9,6 +9,47 @@ from agent_shellcheck.report import _github_data, _github_property
 
 
 class CliAndReportTests(unittest.TestCase):
+    def test_write_baseline_includes_hidden_findings_without_changing_gate(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = write_text(root / "AGENTS.md", "```bash\ncat C:\\workspace\\instructions.md\n```\n")
+            baseline = root / "baseline.json"
+            args = [str(path), "--format", "json", "--min-severity", "error", "--fail-on", "warning"]
+            first = run_cli([*args, "--write-baseline", str(baseline)])
+            self.assertEqual(first.returncode, 1, first.stderr)
+            self.assertEqual(parsed_stdout(first)["findings"], [])
+            import json
+
+            self.assertTrue(json.loads(baseline.read_text(encoding="utf-8"))["findings"])
+            second = run_cli([*args, "--baseline", str(baseline)])
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertGreater(parsed_stdout(second)["summary"]["baselineSuppressed"], 0)
+
+    def test_outputs_cannot_replace_policy_or_input_baseline(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            instruction = write_text(root / "AGENTS.md", "# Clean\n")
+            policy = write_text(root / "policy.json", "{}")
+            process = run_cli([str(instruction), "--config", str(policy), "--output", str(policy)])
+            self.assertEqual(process.returncode, 2, process.stderr)
+            self.assertEqual(policy.read_text(encoding="utf-8"), "{}")
+            baseline = write_text(root / "baseline.json", '{"findings": []}')
+            process = run_cli([str(instruction), "--baseline", str(baseline), "--output", str(baseline)])
+            self.assertEqual(process.returncode, 2, process.stderr)
+            self.assertEqual(baseline.read_text(encoding="utf-8"), '{"findings": []}')
+
+    def test_baseline_output_cannot_replace_instruction_or_report(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            instruction = write_text(root / "AGENTS.md", "# Clean\n")
+            process = run_cli([str(instruction), "--write-baseline", str(instruction)])
+            self.assertEqual(process.returncode, 2, process.stderr)
+            self.assertEqual(instruction.read_text(encoding="utf-8"), "# Clean\n")
+            output = root / "report.json"
+            process = run_cli([str(instruction), "--write-baseline", str(output), "--output", str(output)])
+            self.assertEqual(process.returncode, 2, process.stderr)
+            self.assertFalse(output.exists())
+
     def test_json_is_valid_deterministic_and_sorted_across_input_order(self) -> None:
         with TemporaryDirectory() as directory:
             root = Path(directory)

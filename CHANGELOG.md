@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+- Add `--write-baseline` for complete, unfiltered incremental baselines and protect instruction, policy, and input-baseline files from report output.
+
 ### Added
 
 - A CI adoption guide covering policy files, native annotations, permissions, and immutable release pinning.

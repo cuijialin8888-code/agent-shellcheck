@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import json
 from pathlib import Path
 import sys
 
 from . import __version__
-from .baseline import BaselineError, finding_key, load_baseline
+from .baseline import MAX_BASELINE_BYTES, BaselineError, finding_key, load_baseline
 from .config import (
     DEFAULT_FAIL_ON,
     DEFAULT_MAX_FILES,
@@ -35,11 +36,18 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--target", choices=TARGETS, help="target for generic command snippets")
     parser.add_argument("--format", choices=FORMATS, default="text", dest="output_format", help="report format")
     parser.add_argument("--output", type=Path, help="write the report to this file")
-    parser.add_argument(
+    baseline_group = parser.add_mutually_exclusive_group()
+    baseline_group.add_argument(
         "--baseline",
         type=Path,
         metavar="PATH",
         help="suppress findings already present in a previous JSON report",
+    )
+    baseline_group.add_argument(
+        "--write-baseline",
+        type=Path,
+        metavar="PATH",
+        help="write all non-ignored findings as a baseline, including hidden severities",
     )
     parser.add_argument(
         "--min-severity",
@@ -106,13 +114,32 @@ def main(argv: list[str] | None = None) -> int:
                 finding for finding in result.all_findings if finding_key(finding) not in baseline
             ]
             result.baseline_suppressed = before - len(result.all_findings)
-        report = render_report(result, args.output_format, __version__)
-        if args.output:
-            output = args.output.expanduser().resolve()
-            if output in {path.resolve() for path in result.scanned_paths}:
-                raise DiscoveryError("refusing to overwrite a scanned instruction file with the report")
+        protected = {path.resolve() for path in result.scanned_paths}
+        if config.source is not None:
+            protected.add(config.source.resolve())
+        if args.baseline:
+            protected.add(args.baseline.expanduser().resolve())
+        destinations = [
+            path.expanduser().resolve() for path in (args.output, args.write_baseline) if path
+        ]
+        if len(destinations) != len(set(destinations)):
+            raise DiscoveryError("report and baseline output must use different paths")
+        for output in destinations:
+            if output in protected:
+                raise DiscoveryError("refusing to overwrite a scanned instruction, policy, or baseline file")
             if not output.parent.is_dir():
                 raise DiscoveryError(f"output directory does not exist: {output.parent}")
+        if args.write_baseline:
+            baseline_report = render_report(
+                replace(result, findings=list(result.all_findings)), "json", __version__
+            )
+            if len(baseline_report.encode("utf-8")) > MAX_BASELINE_BYTES:
+                raise BaselineError("generated baseline exceeds the supported size limit")
+            with destinations[-1].open("w", encoding="utf-8", newline="\n") as handle:
+                handle.write(baseline_report)
+        report = render_report(result, args.output_format, __version__)
+        if args.output:
+            output = destinations[0]
             with output.open("w", encoding="utf-8", newline="\n") as handle:
                 handle.write(report)
         else:
