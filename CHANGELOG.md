@@ -14,6 +14,7 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Run the Python 3.9 compatibility check on Ubuntu 22.04 while preserving its required-check name; Ubuntu 26.04 does not provide that interpreter.
 - Refuse report and baseline outputs that are symbolic links or have multiple hard links, preserving aliased source files.
 - Report excessively nested baseline JSON as an input error instead of an uncaught recursion error.
 - `--fail-on` now evaluates all non-ignored findings even when `--min-severity`

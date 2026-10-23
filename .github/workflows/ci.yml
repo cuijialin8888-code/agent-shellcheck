@@ -23,13 +23,14 @@ jobs:
         include:
           - os: ubuntu-latest
             python-version: "3.9"
+            runner: ubuntu-22.04 # Python 3.9 is unavailable on Ubuntu 26.04.
           - os: ubuntu-latest
             python-version: "3.13"
           - os: windows-latest
             python-version: "3.13"
           - os: macos-latest
             python-version: "3.13"
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner || matrix.os }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
