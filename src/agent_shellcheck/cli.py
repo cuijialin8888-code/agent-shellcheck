@@ -119,9 +119,15 @@ def main(argv: list[str] | None = None) -> int:
             protected.add(config.source.resolve())
         if args.baseline:
             protected.add(args.baseline.expanduser().resolve())
-        destinations = [
-            path.expanduser().resolve() for path in (args.output, args.write_baseline) if path
+        raw_destinations = [
+            path.expanduser() for path in (args.output, args.write_baseline) if path
         ]
+        for output in raw_destinations:
+            if output.is_symlink():
+                raise DiscoveryError("output cannot follow symbolic links")
+            if output.exists() and output.stat().st_nlink > 1:
+                raise DiscoveryError("output cannot replace files with multiple hard links")
+        destinations = [path.resolve() for path in raw_destinations]
         if len(destinations) != len(set(destinations)):
             raise DiscoveryError("report and baseline output must use different paths")
         for output in destinations:

@@ -38,6 +38,8 @@ def load_baseline(path: Path) -> set[tuple[str, str, str, str]]:
         raise BaselineError(f"baseline file is larger than {MAX_BASELINE_BYTES} bytes: {candidate}")
     try:
         payload = json.loads(candidate.read_text(encoding="utf-8-sig"))
+    except RecursionError as exc:
+        raise BaselineError("baseline JSON nesting exceeds the parser limit") from exc
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise BaselineError(f"cannot read baseline JSON {candidate}: {exc}") from exc
     if not isinstance(payload, dict) or not isinstance(payload.get("findings"), list):

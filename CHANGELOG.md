@@ -14,6 +14,8 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Refuse report and baseline outputs that are symbolic links or have multiple hard links, preserving aliased source files.
+- Report excessively nested baseline JSON as an input error instead of an uncaught recursion error.
 - `--fail-on` now evaluates all non-ignored findings even when `--min-severity`
   hides them from the rendered report.
 

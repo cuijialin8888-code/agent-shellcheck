@@ -251,3 +251,5 @@ source .venv/bin/activate
 
 `main` 分支新增（尚未发布版本）：`--write-baseline baseline.json` 保存所有未忽略的检查结果，包括被 `--min-severity` 隐藏的级别；原有报告筛选和 `--fail-on` 退出策略保持不变。后续通过 `--baseline baseline.json` 只报告新增问题。读取和生成基线不能同时使用；输出不能覆盖输入基线、策略文件或被检查的指令文件。
 
+报告和基线输出拒绝符号链接及具有多个硬链接的文件，防止通过别名覆盖源文件。基线 JSON 嵌套过深时返回输入错误（退出码 2），不写入报告。
+
