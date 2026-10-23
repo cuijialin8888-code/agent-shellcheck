@@ -269,6 +269,8 @@ repository's structured issue forms.
 
 ## Complete incremental baselines
 
+Report and baseline outputs reject symbolic links and files with multiple hard links. Excessively nested baseline JSON returns input-error status 2 without writing a report.
+
 On `main` (unreleased), `--write-baseline baseline.json` saves every non-ignored finding, including severities hidden by `--min-severity`. The ordinary report and `--fail-on` exit policy remain unchanged. Use `--baseline baseline.json` in later runs to report new findings. Reading and writing a baseline are mutually exclusive; writing a report cannot overwrite its input baseline, policy file, or scanned instructions.
 
 ```console
