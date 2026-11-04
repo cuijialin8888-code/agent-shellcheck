@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and releases use
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.1] - 2026-11-04
 
 - Add `--write-baseline` for complete, unfiltered incremental baselines and protect instruction, policy, and input-baseline files from report output.
 
@@ -13,6 +13,14 @@ All notable changes to this project are documented here. The format follows
 - A CI adoption guide covering policy files, native annotations, permissions, and immutable release pinning.
 
 ### Fixed
+
+- Preserve leading dots in exclusion globs and apply exclusions to explicit files.
+- Enforce the file count across mixed directory/explicit inputs and reject invalid limits.
+- Bound instruction and baseline reads; reject oversized explicit instructions and
+  nonregular inputs instead of silently reporting a clean scan.
+- Normalize deeply nested policy JSON and interpreter integer-parser limit failures.
+- Break case-insensitive path-order ties using the exact repository-relative path.
+- Modernize MIT license metadata and require setuptools 77+ for source builds.
 
 - Run the Python 3.9 compatibility check on Ubuntu 22.04 while preserving its required-check name; Ubuntu 26.04 does not provide that interpreter.
 - Refuse report and baseline outputs that are symbolic links or have multiple hard links, preserving aliased source files.
@@ -50,6 +58,6 @@ All notable changes to this project are documented here. The format follows
 - Text, JSON, SARIF, Markdown, and self-contained HTML reports.
 - Deterministic discovery with no command execution and no runtime dependencies.
 
-[Unreleased]: https://github.com/cuijialin8888-code/agent-shellcheck/compare/v0.2.0...HEAD
+[0.2.1]: https://github.com/cuijialin8888-code/agent-shellcheck/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/cuijialin8888-code/agent-shellcheck/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/cuijialin8888-code/agent-shellcheck/releases/tag/v0.1.0

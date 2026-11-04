@@ -189,7 +189,7 @@ agent-shellcheck . --baseline baseline.json --format github
 仓库还提供不依赖 Node 的复合 Action：
 
 ```yaml
-- uses: cuijialin8888-code/agent-shellcheck@v0.2.0
+- uses: cuijialin8888-code/agent-shellcheck@v0.2.1
   with:
     args: ". --target portable --format github"
 ```
@@ -249,7 +249,15 @@ source .venv/bin/activate
 
 ## 完整的增量检查基线
 
-`main` 分支新增（尚未发布版本）：`--write-baseline baseline.json` 保存所有未忽略的检查结果，包括被 `--min-severity` 隐藏的级别；原有报告筛选和 `--fail-on` 退出策略保持不变。后续通过 `--baseline baseline.json` 只报告新增问题。读取和生成基线不能同时使用；输出不能覆盖输入基线、策略文件或被检查的指令文件。
+从 `v0.2.1` 起：`--write-baseline baseline.json` 保存所有未忽略的检查结果，包括被 `--min-severity` 隐藏的级别；原有报告筛选和 `--fail-on` 退出策略保持不变。后续通过 `--baseline baseline.json` 只报告新增问题。读取和生成基线不能同时使用；输出不能覆盖输入基线、策略文件或被检查的指令文件。
 
 报告和基线输出拒绝符号链接及具有多个硬链接的文件，防止通过别名覆盖源文件。基线 JSON 嵌套过深时返回输入错误（退出码 2），不写入报告。
 
+
+## v0.2.1 的发现与读取边界
+
+排除规则同样适用于显式指定的文件，并保留 `.github/**` 等隐藏目录名称。
+`--max-files` 对所有输入共同计数，重复文件只计一次。目录扫描跳过超大或非普通文件；
+显式指定超大指令文件时返回状态 2。指令文件读取上限为 1,000,000 字节，
+基线读取上限为 5,000,000 字节，发现后文件变大也不能绕过读取上限。
+过深的策略 JSON 和超过解释器解析限制的 JSON 会返回输入错误。

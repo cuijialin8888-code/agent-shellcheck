@@ -114,6 +114,10 @@ def load_project_config(
         raise ConfigError(
             f"invalid JSON in {path} at line {exc.lineno}, column {exc.colno}: {exc.msg}"
         ) from exc
+    except RecursionError as exc:
+        raise ConfigError("configuration JSON nesting exceeds the parser limit") from exc
+    except ValueError as exc:
+        raise ConfigError("configuration JSON exceeds the parser limits") from exc
     return _parse_config(payload, path)
 
 

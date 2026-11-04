@@ -17,7 +17,7 @@ directories to constrain discovery.
 | `--min-severity LEVEL` | Show findings at or above `info`, `warning`, or `error`. |
 | `--fail-on LEVEL` | Return status `1` when any non-ignored finding reaches this level. Default: `error`. |
 | `--ignore RULE_ID` | Omit a stable rule ID such as `ASC012`. Repeat to ignore more than one rule. |
-| `--exclude GLOB` | Exclude matching paths during directory discovery. Repeat for more patterns. |
+| `--exclude GLOB` | Exclude matching paths, including explicit files. Repeat for more patterns. |
 | `--max-files NUMBER` | Stop bounded discovery from scanning more than this many matching files. |
 | `--config PATH` | Load an explicit `.agent-shellcheck.json`-compatible policy file. |
 | `--no-config` | Disable automatic repository policy discovery. |
@@ -68,3 +68,12 @@ when the CI log also needs the blocking evidence.
 See [outputs](outputs.md) for the JSON schema overview, SARIF integration, and
 exit-status contract. See [repository policy](configuration.md) to share target,
 severity, ignore, exclusion, path, and scan-bound settings with the whole team.
+
+## Input bounds
+
+`--max-files` counts unique selected files across directory and explicit inputs.
+Exclusion patterns preserve hidden-directory names; `.github/**` and `./.github/**`
+are equivalent. Directory discovery skips oversized/nonregular files. Explicit
+instructions exceeding 1,000,000 bytes fail with status 2; reads remain bounded if
+files grow after discovery. Baselines are regular files capped at 5,000,000 bytes.
+Deeply nested or otherwise parser-limited policy/baseline JSON fails with status 2.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import fnmatch
 import os
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -54,6 +55,8 @@ class DiscoveryError(RuntimeError):
 def discover_files(
     inputs: Iterable[str | Path], *, excludes: Iterable[str] = (), max_files: int = 1000
 ) -> DiscoveryResult:
+    if isinstance(max_files, bool) or not isinstance(max_files, int) or max_files < 1:
+        raise DiscoveryError("max_files must be a positive integer")
     raw_inputs = [Path(item).expanduser() for item in inputs]
     if not raw_inputs:
         raw_inputs = [Path.cwd()]
@@ -74,10 +77,19 @@ def discover_files(
     for item in resolved_inputs:
         if item.is_file():
             if _is_markdown_candidate(item, explicit=True):
+                if _matches_any(_relative_posix(item, root), patterns):
+                    skipped += 1
+                    continue
+                if item.stat().st_size > MAX_FILE_BYTES:
+                    raise DiscoveryError(f"file is larger than {MAX_FILE_BYTES} bytes: {item}")
                 files.add(item)
+                if len(files) > max_files:
+                    raise DiscoveryError(
+                        f"more than {max_files} matching files found; narrow the input or raise --max-files"
+                    )
             continue
         if not item.is_dir():
-            continue
+            raise DiscoveryError(f"input must be a regular file or directory: {item}")
         for directory, dirnames, filenames in os.walk(item, followlinks=False):
             retained_directories: list[str] = []
             for name in sorted(dirnames):
@@ -102,7 +114,8 @@ def discover_files(
                     skipped += 1
                     continue
                 try:
-                    if path.is_symlink() or path.stat().st_size > MAX_FILE_BYTES:
+                    status = path.stat()
+                    if path.is_symlink() or not stat.S_ISREG(status.st_mode) or status.st_size > MAX_FILE_BYTES:
                         skipped += 1
                         continue
                 except OSError:
@@ -114,7 +127,9 @@ def discover_files(
                         f"more than {max_files} matching files found; narrow the input or raise --max-files"
                     )
 
-    ordered = tuple(sorted(files, key=lambda value: _relative_posix(value, root).casefold()))
+    ordered = tuple(sorted(files, key=lambda value: (
+        _relative_posix(value, root).casefold(), _relative_posix(value, root)
+    )))
     return DiscoveryResult(root=root, files=ordered, skipped_files=skipped)
 
 
@@ -123,7 +138,15 @@ def relative_path(path: Path, root: Path) -> str:
 
 
 def read_text(path: Path) -> str:
-    data = path.read_bytes()
+    try:
+        if not stat.S_ISREG(path.stat().st_mode):
+            raise DiscoveryError(f"input must be a regular file: {path}")
+        with path.open("rb") as handle:
+            data = handle.read(MAX_FILE_BYTES + 1)
+    except OSError as exc:
+        raise DiscoveryError(f"cannot read instruction file: {path}") from exc
+    if len(data) > MAX_FILE_BYTES:
+        raise DiscoveryError(f"file is larger than {MAX_FILE_BYTES} bytes: {path}")
     if data.startswith(b"\xef\xbb\xbf"):
         data = data[3:]
     try:
@@ -148,7 +171,7 @@ def _is_markdown_candidate(path: Path, *, explicit: bool) -> bool:
 
 
 def _normalize_pattern(pattern: str) -> str:
-    return pattern.replace("\\", "/").lstrip("./")
+    return pattern.replace("\\", "/").removeprefix("./")
 
 
 def _relative_posix(path: Path, root: Path) -> str:
