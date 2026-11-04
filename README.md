@@ -206,7 +206,7 @@ For policy configuration, annotations, permissions, and release pinning, see [CI
 The repository also ships a zero-Node composite action:
 
 ```yaml
-- uses: cuijialin8888-code/agent-shellcheck@v0.2.0
+- uses: cuijialin8888-code/agent-shellcheck@v0.2.1
   with:
     args: ". --target portable --format github"
 ```
@@ -271,10 +271,19 @@ repository's structured issue forms.
 
 Report and baseline outputs reject symbolic links and files with multiple hard links. Excessively nested baseline JSON returns input-error status 2 without writing a report.
 
-On `main` (unreleased), `--write-baseline baseline.json` saves every non-ignored finding, including severities hidden by `--min-severity`. The ordinary report and `--fail-on` exit policy remain unchanged. Use `--baseline baseline.json` in later runs to report new findings. Reading and writing a baseline are mutually exclusive; writing a report cannot overwrite its input baseline, policy file, or scanned instructions.
+Since `v0.2.1`, `--write-baseline baseline.json` saves every non-ignored finding, including severities hidden by `--min-severity`. The ordinary report and `--fail-on` exit policy remain unchanged. Use `--baseline baseline.json` in later runs to report new findings. Reading and writing a baseline are mutually exclusive; writing a report cannot overwrite its input baseline, policy file, or scanned instructions.
 
 ```console
 agent-shellcheck . --write-baseline baseline.json --fail-on none
 agent-shellcheck . --baseline baseline.json --fail-on warning
 ```
 
+
+## Discovery limits in v0.2.1
+
+Exclusions also apply to explicitly named files, including globs such as `.github/**`.
+`--max-files` counts unique selected files across all inputs. Directory discovery
+skips oversized and nonregular candidates; explicitly named oversized instructions
+fail with status 2. Instruction reads are capped at 1,000,000 bytes, including when
+files grow after discovery. Baselines use bounded reads capped at 5,000,000 bytes.
+Deeply nested policies and JSON parser-limit failures return input errors.

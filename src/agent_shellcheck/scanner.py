@@ -22,8 +22,8 @@ def scan_paths(
         raise ValueError(f"unknown target: {target}")
     if not isinstance(min_severity, Severity):
         min_severity = Severity.parse(str(min_severity))
-    if max_files < 1:
-        raise ValueError("max_files must be at least 1")
+    if isinstance(max_files, bool) or not isinstance(max_files, int) or max_files < 1:
+        raise ValueError("max_files must be a positive integer")
 
     ignored = {value.upper() for value in ignore_rules}
     unknown_ignored = ignored.difference(RULE_BY_ID)

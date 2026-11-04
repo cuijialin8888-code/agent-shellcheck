@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import stat
 from pathlib import Path
 
 from .models import Finding
@@ -31,17 +32,27 @@ def load_baseline(path: Path) -> set[tuple[str, str, str, str]]:
     if candidate.is_symlink():
         raise BaselineError(f"baseline file cannot be a symbolic link: {candidate}")
     try:
-        size = candidate.stat().st_size
+        status = candidate.stat()
     except OSError as exc:
         raise BaselineError(f"cannot stat baseline file {candidate}: {exc}") from exc
-    if size > MAX_BASELINE_BYTES:
+    if not stat.S_ISREG(status.st_mode):
+        raise BaselineError(f"baseline input must be a regular file: {candidate}")
+    if status.st_size > MAX_BASELINE_BYTES:
         raise BaselineError(f"baseline file is larger than {MAX_BASELINE_BYTES} bytes: {candidate}")
     try:
-        payload = json.loads(candidate.read_text(encoding="utf-8-sig"))
+        with candidate.open("rb") as handle:
+            data = handle.read(MAX_BASELINE_BYTES + 1)
+        if len(data) > MAX_BASELINE_BYTES:
+            raise BaselineError(f"baseline file grew beyond {MAX_BASELINE_BYTES} bytes: {candidate}")
+        payload = json.loads(data.decode("utf-8-sig"))
     except RecursionError as exc:
         raise BaselineError("baseline JSON nesting exceeds the parser limit") from exc
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise BaselineError(f"cannot read baseline JSON {candidate}: {exc}") from exc
+    except BaselineError:
+        raise
+    except ValueError as exc:
+        raise BaselineError("baseline JSON exceeds the parser limits") from exc
     if not isinstance(payload, dict) or not isinstance(payload.get("findings"), list):
         raise BaselineError("baseline must be an agent-shellcheck JSON report with a findings array")
 

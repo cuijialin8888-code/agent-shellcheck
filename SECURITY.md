@@ -27,3 +27,12 @@ only a request for a private contact channel—do not include exploit details.
 
 It is a portability linter, not a sandbox, malware detector, or complete
 security scanner. Review third-party instructions before running them.
+
+## Input resource limits
+
+Instruction reads are capped at 1,000,000 bytes and baseline reads at 5,000,000 bytes,
+including when files grow after their initial size check. Nonregular candidates
+(such as named pipes) are skipped during directory discovery and rejected by direct
+readers. Exclusions and the file cap apply to explicit file inputs as well.
+The scanner does not defend against hostile filesystem replacement races; keep
+inputs stable while scanning. These limits do not guarantee a fixed memory budget.
